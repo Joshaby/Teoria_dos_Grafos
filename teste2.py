@@ -14,4 +14,11 @@ g_p2.adicionaAresta('D-E')
 g_p2.adicionaAresta('F-G')
 g_p2.adicionaAresta('F-E')
 
-print(g_p2)
+g_p3 = Grafo(['A', 'B', 'C', 'D'])
+g_p3.adicionaAresta('A-B')
+g_p3.adicionaAresta('B-D')
+g_p3.adicionaAresta('C-D')
+g_p3.adicionaAresta('D-B')
+
+print(g_p3)
+print(g_p3.warshall())

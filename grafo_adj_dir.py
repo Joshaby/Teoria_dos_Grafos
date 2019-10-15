@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from copy import deepcopy
 
 class VerticeInvalidoException(Exception):
     pass
@@ -197,6 +198,38 @@ class Grafo:
                 self.M[i_a1][i_a2] -= 1
         else:
             raise ArestaInvalidaException('A aresta {} é inválida'.format(a))
+    ##### ROTEIRO 6 ####################################################################################################
+
+    def max(self, Num, Num1):
+        if Num == 1 or Num1 == 1 :
+            return 1
+        return 0
+
+    def warshall(self) :
+        List = deepcopy(self.M)
+        for i in range(len(self.N)) :
+            for j in range(len(self.N)) :
+                if List[j][i] >= 1:
+                    for k in range(len(self.N)) :
+                        List[j][k] = max(List[j][k], List[i][k])
+
+        espaco = ' ' * (self.__maior_vertice)
+        grafo_str = espaco + ' '
+        for v in range(len(self.N)):
+            grafo_str += self.N[v]
+            if v < (len(self.N) - 1):
+                grafo_str += ' '
+        grafo_str += '\n'
+        for l in range(len(List)):
+            grafo_str += self.N[l] + ' '
+            for c in range(len(List)):
+                grafo_str += str(List[l][c]) + ' '
+            grafo_str += '\n'
+
+        return grafo_str
+
+
+    ####################################################################################################################
 
     def __str__(self):
         '''
