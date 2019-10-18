@@ -200,33 +200,43 @@ class Grafo:
             raise ArestaInvalidaException('A aresta {} é inválida'.format(a))
     ##### ROTEIRO 6 ####################################################################################################
 
+    def retira_arestas(self, Matriz):
+        '''
+        Retira arestas de arestas paralelas e laços
+        :param Matriz: Matriz de adjacencia
+        :return: nda
+        '''
+        for i in range(len(self.N)) :
+            for j in range(len(self.N)) :
+                if Matriz[i][j] > 1 :
+                    Matriz[i][j] -= 1
+
     def max(self, Num, Num1):
-        if Num == 1 or Num1 == 1 :
+        '''
+        Retorna o máximo de duas arestas
+        :param Num: QTde de arestas
+        :param Num1: QTde de arestas
+        :return: 1 para se houver arestas e 0 para quando não houver
+        '''
+        if Num >= 1 or Num1 >= 1 :
             return 1
         return 0
 
     def warshall(self) :
+        '''
+        Função para fazer algoritmo de warshall
+        :return: Grafo em formato de matriz de alcançabilidade
+        '''
+        grafo = Grafo(self.N)
         List = deepcopy(self.M)
+        self.retira_arestas(List)
         for i in range(len(self.N)) :
             for j in range(len(self.N)) :
                 if List[j][i] >= 1:
                     for k in range(len(self.N)) :
                         List[j][k] = max(List[j][k], List[i][k])
-
-        espaco = ' ' * (self.__maior_vertice)
-        grafo_str = espaco + ' '
-        for v in range(len(self.N)):
-            grafo_str += self.N[v]
-            if v < (len(self.N) - 1):
-                grafo_str += ' '
-        grafo_str += '\n'
-        for l in range(len(List)):
-            grafo_str += self.N[l] + ' '
-            for c in range(len(List)):
-                grafo_str += str(List[l][c]) + ' '
-            grafo_str += '\n'
-
-        return grafo_str
+        grafo.M = List
+        return grafo
 
 
     ####################################################################################################################

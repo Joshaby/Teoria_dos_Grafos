@@ -19,6 +19,7 @@ g_p3.adicionaAresta('A-B')
 g_p3.adicionaAresta('B-D')
 g_p3.adicionaAresta('C-D')
 g_p3.adicionaAresta('D-B')
+g_p3.adicionaAresta('D-B')
 
 print(g_p3)
 print(g_p3.warshall())

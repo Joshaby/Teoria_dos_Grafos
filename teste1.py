@@ -52,20 +52,19 @@ g_p2.adicionaAresta('F-F')
 
 print(g_c.ha_ciclo_hamiltoniano())
 
-# a = str.ascii_uppercase
-# a = a[:-20]
-#
-# grafo1 = Grafo(a)
-# cont = 0
-#     for i in range(len(a)) :
-#         for j in range(len(a)) :
-#             if a[i] != a[j] :
-#                 grafo1.adicionaAresta(a[i] + grafo1.SEPARADOR_ARESTA + a[j])
-#     cont += 1
-#
-# # Vertices = []
-# # grafo1.DFS(Vertices,'C')
-# # print(Vertices)
+a = str.ascii_uppercase
+
+grafo1 = Grafo(a)
+cont = 0
+for i in range(len(a)) :
+    for j in range(len(a)) :
+        if a[i] != a[j] :
+            grafo1.adicionaAresta(a[i] + grafo1.SEPARADOR_ARESTA + a[j])
+cont += 1
+
+# Vertices = []
+# grafo1.DFS(Vertices,'C')
+print(grafo1)
 # grafo = Grafo()
 #
 # Grafo.adicionaVertice(grafo,"A")
