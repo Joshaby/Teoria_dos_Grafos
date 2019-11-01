@@ -14,24 +14,26 @@ g_p.adicionaAresta('C-T')
 g_p.adicionaAresta('M-T')
 g_p.adicionaAresta('T-Z')
 
-g_c = Grafo(['J', 'C', 'E', 'F'])
-g_c.adicionaAresta('J-C')
-g_c.adicionaAresta('F-E')
-g_c.adicionaAresta('F-J')
+print(g_p.Dijkstra('J', 'Z'))
 
-g_p1 = Grafo(['J', 'C', 'T', 'P', 'A', 'Z', 'E', 'M'])
-
-g_p1.adicionaAresta('J-C')
-g_p1.adicionaAresta('C-E')
-g_p1.adicionaAresta('E-A')
-g_p1.adicionaAresta('A-P')
-g_p1.adicionaAresta('E-P')
-g_p1.adicionaAresta('P-M')
-g_p1.adicionaAresta('M-T')
-g_p1.adicionaAresta('T-Z')
-g_p1.adicionaAresta('T-C')
-g_p1.adicionaAresta('Z-J')
-
+# g_c = Grafo(['J', 'C', 'E', 'F'])
+# g_c.adicionaAresta('J-C')
+# g_c.adicionaAresta('F-E')
+# g_c.adicionaAresta('F-J')
+#
+# g_p1 = Grafo(['J', 'C', 'T', 'P', 'A', 'Z', 'E', 'M'])
+#
+# g_p1.adicionaAresta('J-C')
+# g_p1.adicionaAresta('C-E')
+# g_p1.adicionaAresta('E-A')
+# g_p1.adicionaAresta('A-P')
+# g_p1.adicionaAresta('E-P')
+# g_p1.adicionaAresta('P-M')
+# g_p1.adicionaAresta('M-T')
+# g_p1.adicionaAresta('T-Z')
+# g_p1.adicionaAresta('T-C')
+# g_p1.adicionaAresta('Z-J')
+#
 g_p2 = Grafo(['A', 'C', 'B', 'E', 'D', 'H', 'G', 'F'])
 g_p2.adicionaAresta('A-B')
 g_p2.adicionaAresta('A-H')
@@ -50,21 +52,21 @@ g_p2.adicionaAresta('F-F')
 g_p2.adicionaAresta('D-F')
 g_p2.adicionaAresta('F-F')
 
-print(g_c.ha_ciclo_hamiltoniano())
-
-a = str.ascii_uppercase
-
-grafo1 = Grafo(a)
-cont = 0
-for i in range(len(a)) :
-    for j in range(len(a)) :
-        if a[i] != a[j] :
-            grafo1.adicionaAresta(a[i] + grafo1.SEPARADOR_ARESTA + a[j])
-cont += 1
+print(g_p2.Dijkstra('A', 'B'))
+#
+# a = str.ascii_uppercase
+#
+# grafo1 = Grafo(a)
+# cont = 0
+# for i in range(len(a)) :
+#     for j in range(len(a)) :
+#         if a[i] != a[j] :
+#             grafo1.adicionaAresta(a[i] + grafo1.SEPARADOR_ARESTA + a[j])
+# cont += 1
 
 # Vertices = []
 # grafo1.DFS(Vertices,'C')
-print(grafo1)
+# print(grafo1)
 # grafo = Grafo()
 #
 # Grafo.adicionaVertice(grafo,"A")

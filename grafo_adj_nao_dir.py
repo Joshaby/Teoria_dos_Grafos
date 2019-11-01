@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from math import inf
 
 class VerticeInvalidoException(Exception):
     pass
@@ -516,6 +517,58 @@ class Grafo:
                     if cond != None :
                         return cond
             return False
+
+    #### ROTEIRO 5 #####################################################################################################
+
+    def __retira_vertice(self, Vertice, Vertices):
+        if Vertice in Vertices :
+            Vertices.remove(Vertice)
+
+    def __retira_arestas(self):
+        for i in range(len(self.N)) :
+            for j in range(i, len(self.N)) :
+                if self.M[i][j] > 1 :
+                    self.M[i][j] = 1
+
+    def __inicia_vertices(self, U):
+        BETA = dict()
+        FI = dict()
+        PI = dict()
+        for i in self.N :
+            PI[i] = 0
+            if i == U :
+                BETA[i] = 0
+                FI[i] = 1
+            else :
+                BETA[i] = inf
+                FI[i] = 0
+        return BETA, FI, PI
+
+    def Dijkstra(self, U, V) :
+        self.__retira_arestas()
+        BETA, FI, PI = self.__inicia_vertices(U)
+        W = U
+        while(W != V) :
+            Vertices, AUX = self.vertices_e_arestas_adjacentes(W, self.arestas())
+            self.__retira_vertice(PI[W], Vertices)
+            for i in Vertices :
+                if BETA[i] > BETA[W] + 1 :
+                    BETA[i] = BETA[W] + 1
+                    PI[i] = W
+            r = 0
+            for i in self.N :
+                if FI[i] == 0 :
+                    r = i
+                    break
+            FI[r] = 1
+            W = r
+        AUX = PI[V]
+        CAMINHO = V + ' - '
+        while(AUX != 0) :
+            CAMINHO += (AUX + ' - ')
+            AUX = PI[AUX]
+        CAMINHO = CAMINHO[::-1]
+        return CAMINHO[3:]
 
     ####################################################################################################################
 
