@@ -518,19 +518,34 @@ class Grafo:
                         return cond
             return False
 
-    #### ROTEIRO 5 #####################################################################################################
+    #### ROTEIRO 7 #####################################################################################################
 
     def __retira_vertice(self, Vertice, Vertices):
+        '''
+
+        :param Vertice: Vértice a ser tirado
+        :param Vertices: Lista de vértices
+        :return: nda
+        '''
         if Vertice in Vertices :
             Vertices.remove(Vertice)
 
     def __retira_arestas(self):
+        '''
+        retira arestas paralelas e laços
+        :return:
+        '''
         for i in range(len(self.N)) :
             for j in range(i, len(self.N)) :
                 if self.M[i][j] > 1 :
                     self.M[i][j] = 1
 
     def __inicia_vertices(self, U):
+        '''
+        Calcula o BETA, FI e Pi dos vértices
+        :param U: Vértice de início
+        :return: BETA, FI, PI
+        '''
         BETA = dict()
         FI = dict()
         PI = dict()
@@ -545,6 +560,12 @@ class Grafo:
         return BETA, FI, PI
 
     def Dijkstra(self, U, V) :
+        '''
+        Implementação do algoritmo de Dijkstra
+        :param U: Vértice inicial
+        :param V: Vértice final
+        :return: Um caminho do tipo String
+        '''
         self.__retira_arestas()
         BETA, FI, PI = self.__inicia_vertices(U)
         W = U
@@ -598,8 +619,3 @@ class Grafo:
             grafo_str += '\n'
 
         return grafo_str
-
-#   for i in range(len(VerticesAdjacentes)):
-#     if VerticesAdjacentes[i] == VerticeAtual :
-#         Aux, Aux1 = VerticesAdjacentes[i], ArestasAdjacentes[i]
-#         break
