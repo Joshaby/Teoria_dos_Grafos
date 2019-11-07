@@ -500,7 +500,7 @@ class Grafo:
             for i in self.N :
                 if self.grau(i) % 2 != 0 :
                     contGrau.append(i)
-                if self.grau(i) % 2 == 0:
+                if self.grau(i) % 2 == 0 :
                     contPar.append(i)
             if len(contGrau) == 2 or len(contPar) == len(self.N) :
                 if len(contPar) == len(self.N) :
@@ -590,6 +590,37 @@ class Grafo:
             AUX = PI[AUX]
         CAMINHO = CAMINHO[::-1]
         return CAMINHO[3:]
+
+    def DFS_Dijkstra(self, V, W, GAS, QTDE_GAS, ESTACOES, VerticeAnterior, BETA, FI, PI) :
+        GAS -= 1
+        if W in ESTACOES :
+            GAS = QTDE_GAS
+        if W == V or GAS == 0 :
+            return
+        else :
+            Vertices = self.__vertices_adjacentes(W)
+            self.__retira_vertice(VerticeAnterior, Vertices)
+            while True :
+                cond = True
+                if cond :
+                    for i in Vertices :
+                        if BETA[i] > BETA[W] + 1 :
+                            BETA[i] = BETA[W] + 1
+                            PI[i] = W
+                cond = False
+                R = Vertices[0]
+                for i in range(1, len(Vertices)) :
+                    if Vertices[i] < R and FI[Vertices[i]] == 0 :
+                        R = Vertices[i]
+                FI[R] = 1
+                VerticeAnterior = W
+                W = R
+                self.DFS_Dijkstra(V, W, GAS, QTDE_GAS, ESTACOES, VerticeAnterior, BETA, FI, PI)
+                GAS += 1
+
+    def start_DFS_Dijkstra(self, U, V, GAS) :
+        BETA, FI, PI = self.__inicia_vertices(U)
+
 
     ####################################################################################################################
 
