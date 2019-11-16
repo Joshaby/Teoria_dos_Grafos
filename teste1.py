@@ -14,25 +14,26 @@ g_p.adicionaAresta('C-T')
 g_p.adicionaAresta('M-T')
 g_p.adicionaAresta('T-Z')
 
-print(g_p.Dijkstra('J', 'Z'))
+# print(g_p.Dijkstra('J', 'Z'))
 
 # g_c = Grafo(['J', 'C', 'E', 'F'])
 # g_c.adicionaAresta('J-C')
 # g_c.adicionaAresta('F-E')
 # g_c.adicionaAresta('F-J')
 #
-g_p1 = Grafo(['J', 'C', 'T', 'P', 'A', 'Z', 'E', 'M'])
+g_p1 = Grafo(['J', 'C', 'A', 'P', 'Z', 'T', 'E', 'M'])
 #
 g_p1.adicionaAresta('J-C')
 g_p1.adicionaAresta('C-E')
 g_p1.adicionaAresta('E-A')
-g_p1.adicionaAresta('A-P')
 g_p1.adicionaAresta('E-P')
 g_p1.adicionaAresta('P-M')
 g_p1.adicionaAresta('M-T')
 g_p1.adicionaAresta('T-Z')
 g_p1.adicionaAresta('T-C')
 g_p1.adicionaAresta('Z-J')
+g_p1.adicionaAresta('A-Z')
+g_p1.adicionaAresta('A-C')
 #
 # g_p2 = Grafo(['A', 'C', 'B', 'E', 'D', 'H', 'G', 'F'])
 # g_p2.adicionaAresta('A-B')
@@ -52,7 +53,27 @@ g_p1.adicionaAresta('Z-J')
 # g_p2.adicionaAresta('D-F')
 # g_p2.adicionaAresta('F-F')
 
-print(g_p1.Dijkstra('J', 'M'))
+grafo = Grafo(['A','B','C','D','E','H','F','G','I','J'])
+grafo.adicionaAresta('A-H')
+grafo.adicionaAresta('I-H')
+grafo.adicionaAresta('I-G')
+grafo.adicionaAresta('I-F')
+grafo.adicionaAresta('H-F')
+grafo.adicionaAresta('H-C')
+grafo.adicionaAresta('G-F')
+grafo.adicionaAresta('G-C')
+grafo.adicionaAresta('D-C')
+grafo.adicionaAresta('D-E')
+grafo.adicionaAresta('D-B')
+grafo.adicionaAresta('E-B')
+grafo.adicionaAresta('F-B')
+grafo.adicionaAresta('F-E')
+grafo.adicionaAresta('J-B')
+
+print(grafo.DijkstraDrone('A', 'J', 4, 3, ['C']))
+#print(grafo.Dijkstra('A', 'J'))
+
+# print(grafo.DFS_Dijkstra(Ver, 'J', 'A', 3, 3, ['C'], BETA, FI, PI))
 #
 # a = str.ascii_uppercase
 #
@@ -63,7 +84,6 @@ print(g_p1.Dijkstra('J', 'M'))
 #         if a[i] != a[j] :
 #             grafo1.adicionaAresta(a[i] + grafo1.SEPARADOR_ARESTA + a[j])
 # cont += 1
-
 # Vertices = []
 # grafo1.DFS(Vertices,'C')
 # print(grafo1)

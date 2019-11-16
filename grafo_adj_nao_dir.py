@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from math import inf
 
+
 class VerticeInvalidoException(Exception):
     pass
 
@@ -266,7 +267,7 @@ class Grafo:
         for i in range(len(self.N)):
             cont = 0
             if self.N[i] == v:
-                if self.M[i][i] >= 1 :
+                if self.M[i][i] >= 1:
                     cont += self.M[i][i]
                 for k in range(len(self.N)):
                     for j in range(k, len(self.N)):
@@ -431,7 +432,8 @@ class Grafo:
             for j in range(len(NewArestas)):
                 if Aresta == NewArestas[j] or Aresta[::-1] == NewArestas[j]:
                     ArestasAdjacentes.append(NomesVertices[j])
-                    del NewArestas[j]; del NomesVertices[j]
+                    del NewArestas[j]
+                    del NomesVertices[j]
                     break
         return VerticesAdjacentes, ArestasAdjacentes
 
@@ -454,10 +456,11 @@ class Grafo:
         :param ArestasAdjacentes: Arestas adjacentes a Vertice
         :param ArestasPercorridas: Lista de arestas que foram percorridas
         '''
-        for i in ArestasPercorridas :
-            for j in range(len(VerticesAdjacentes)) :
-                if ArestasAdjacentes[j] in ArestasPercorridas :
-                    del ArestasAdjacentes[j]; del VerticesAdjacentes[j]
+        for i in ArestasPercorridas:
+            for j in range(len(VerticesAdjacentes)):
+                if ArestasAdjacentes[j] in ArestasPercorridas:
+                    del ArestasAdjacentes[j];
+                    del VerticesAdjacentes[j]
                     break
 
     def __euler(self, VerticeAtual, VerticeFinal, Caminho, ArestasPercorridas, Arestas):
@@ -474,18 +477,20 @@ class Grafo:
         if len(ArestasPercorridas) == len(Arestas) and Caminho[-1] == VerticeFinal:
             return Caminho
         VerticesAdjacentes, ArestasAdjacentes = self.vertices_e_arestas_adjacentes(VerticeAtual, Arestas)
-        while True :
+        while True:
             self.__retira_vertice_e_arestas(VerticeAtual, VerticesAdjacentes, ArestasAdjacentes, ArestasPercorridas)
             if len(VerticesAdjacentes) > 0 and len(ArestasAdjacentes) > 0:
                 Aux, Aux1 = VerticesAdjacentes[0], ArestasAdjacentes[0]
-                VerticesAdjacentes.remove(Aux); ArestasAdjacentes.remove(Aux1)
+                VerticesAdjacentes.remove(Aux);
+                ArestasAdjacentes.remove(Aux1)
                 ArestasPercorridas.append(Aux1)
                 VerticeAnterior = VerticeAtual
                 self.__euler(Aux, VerticeFinal, Caminho, ArestasPercorridas, Arestas)
                 if len(ArestasPercorridas) == len(Arestas) and Caminho[-1] == VerticeFinal:
                     return Caminho
-                del Caminho[-1]; del ArestasPercorridas[-1]
-            else :
+                del Caminho[-1];
+                del ArestasPercorridas[-1]
+            else:
                 return
 
     def ha_caminho_euleriano(self):
@@ -497,24 +502,24 @@ class Grafo:
             Arestas = self.arestas()
             contGrau = []
             contPar = []
-            for i in self.N :
-                if self.grau(i) % 2 != 0 :
+            for i in self.N:
+                if self.grau(i) % 2 != 0:
                     contGrau.append(i)
-                if self.grau(i) % 2 == 0 :
+                if self.grau(i) % 2 == 0:
                     contPar.append(i)
-            if len(contGrau) == 2 or len(contPar) == len(self.N) :
-                if len(contPar) == len(self.N) :
-                    for i in self.N :
+            if len(contGrau) == 2 or len(contPar) == len(self.N):
+                if len(contPar) == len(self.N):
+                    for i in self.N:
                         Caminho = []
                         ArestasPercorridas = []
-                        cond  = self.__euler(i, i, Caminho, ArestasPercorridas, Arestas)
-                        if cond != None :
+                        cond = self.__euler(i, i, Caminho, ArestasPercorridas, Arestas)
+                        if cond != None:
                             return cond
-                if len(contGrau) == 2 :
+                if len(contGrau) == 2:
                     Caminho = []
                     ArestasPercorridas = []
-                    cond  = self.__euler(contGrau[-1], contGrau[0], Caminho, ArestasPercorridas, Arestas)
-                    if cond != None :
+                    cond = self.__euler(contGrau[-1], contGrau[0], Caminho, ArestasPercorridas, Arestas)
+                    if cond != None:
                         return cond
             return False
 
@@ -527,7 +532,7 @@ class Grafo:
         :param Vertices: Lista de vértices
         :return: nda
         '''
-        if Vertice in Vertices :
+        if Vertice in Vertices:
             Vertices.remove(Vertice)
 
     def __retira_arestas(self):
@@ -535,12 +540,12 @@ class Grafo:
         retira arestas paralelas e laços
         :return:
         '''
-        for i in range(len(self.N)) :
-            for j in range(i, len(self.N)) :
-                if self.M[i][j] > 1 :
+        for i in range(len(self.N)):
+            for j in range(i, len(self.N)):
+                if self.M[i][j] > 1:
                     self.M[i][j] = 1
 
-    def __inicia_vertices(self, U):
+    def inicia_vertices(self, U):
         '''
         Calcula o BETA, FI e Pi dos vértices
         :param U: Vértice de início
@@ -549,17 +554,17 @@ class Grafo:
         BETA = dict()
         FI = dict()
         PI = dict()
-        for i in self.N :
+        for i in self.N:
             PI[i] = 0
-            if i == U :
+            if i == U:
                 BETA[i] = 0
                 FI[i] = 1
-            else :
+            else:
                 BETA[i] = inf
                 FI[i] = 0
         return BETA, FI, PI
 
-    def Dijkstra(self, U, V) :
+    def Dijkstra(self, U, V):
         '''
         Implementação do algoritmo de Dijkstra
         :param U: Vértice inicial
@@ -567,60 +572,100 @@ class Grafo:
         :return: Um caminho do tipo String
         '''
         self.__retira_arestas()
-        BETA, FI, PI = self.__inicia_vertices(U)
+        BETA, FI, PI = self.inicia_vertices(U)
         W = U
-        while(W != V) :
+        while (W != V):
             Vertices, AUX = self.vertices_e_arestas_adjacentes(W, self.arestas())
             self.__retira_vertice(PI[W], Vertices)
-            for i in Vertices :
-                if BETA[i] > BETA[W] + 1 :
+            for i in Vertices:
+                if BETA[i] > BETA[W] + 1 and FI[i] == 0:
                     BETA[i] = BETA[W] + 1
                     PI[i] = W
+            AUX1 = inf
             r = 0
-            for i in self.N :
-                if FI[i] == 0 :
+            for i in self.N:
+                if FI[i] == 0 and BETA[i] < AUX1:
                     r = i
-                    break
             FI[r] = 1
             W = r
         AUX = PI[V]
         CAMINHO = V + ' - '
-        while(AUX != 0) :
+        while (AUX != 0):
             CAMINHO += (AUX + ' - ')
             AUX = PI[AUX]
         CAMINHO = CAMINHO[::-1]
         return CAMINHO[3:]
 
-    def DFS_Dijkstra(self, V, W, GAS, QTDE_GAS, ESTACOES, VerticeAnterior, BETA, FI, PI) :
+    def DijkstraDrone(self, U, V, GAS, QTDE_GAS, ESTACOES):
+        '''
+        Implementação do algoritmo de Dijkstra
+        :param U: Vértice inicial
+        :param V: Vértice final
+        :return: Um caminho do tipo String
+        '''
+        self.__retira_arestas()
+        BETA, FI, PI = self.inicia_vertices(U)
+        W = U
+        while (W != V):
+            if W in ESTACOES :
+                GAS += QTDE_GAS
+            Vertices, AUX = self.vertices_e_arestas_adjacentes(W, self.arestas())
+            self.__retira_vertice(PI[W], Vertices)
+            for i in Vertices:
+                if BETA[i] > BETA[W] + 1 and FI[i] == 0 and BETA[W] + 1 < GAS:
+                    BETA[i] = BETA[W] + 1
+                    PI[i] = W
+            AUX1 = inf
+            r = 0
+            for i in self.N:
+                if FI[i] == 0 and BETA[i] < AUX1 :
+                    r = i
+            FI[r] = 1
+            W = r
+        AUX = PI[V]
+        CAMINHO = V + ' - '
+        while (AUX != 0):
+            CAMINHO += (AUX + ' - ')
+            AUX = PI[AUX]
+        CAMINHO = CAMINHO[::-1]
+        return CAMINHO[3:]
+
+
+    def DFS_Dijkstra(self, Ver, V, W, GAS, QTDE_GAS, ESTACOES, BETA, FI, PI) :
+        Ver.append(W)
         GAS -= 1
         if W in ESTACOES :
             GAS = QTDE_GAS
-        if W == V or GAS == 0 :
+        if Ver[-1] == V or GAS == 0 :
             return
         else :
             Vertices = self.__vertices_adjacentes(W)
-            self.__retira_vertice(VerticeAnterior, Vertices)
             while True :
-                cond = True
-                if cond :
-                    for i in Vertices :
-                        if BETA[i] > BETA[W] + 1 :
-                            BETA[i] = BETA[W] + 1
-                            PI[i] = W
-                cond = False
-                R = Vertices[0]
-                for i in range(1, len(Vertices)) :
-                    if Vertices[i] < R and FI[Vertices[i]] == 0 :
-                        R = Vertices[i]
+                for i in Vertices :
+                    if BETA[i] > BETA[W] + 1 and FI[i] == 0 :
+                        BETA[i] = BETA[W] + 1
+                        PI[i] = W
+                AUX1 = inf
+                R = 0
+                for i in Vertices:
+                    if FI[i] == 0 and BETA[i] < AUX1 :
+                        R = i
+                if R == 0 :
+                    return
                 FI[R] = 1
-                VerticeAnterior = W
                 W = R
-                self.DFS_Dijkstra(V, W, GAS, QTDE_GAS, ESTACOES, VerticeAnterior, BETA, FI, PI)
-                GAS += 1
+                Vertices.remove(R)
+                self.DFS_Dijkstra(Ver, V, W, GAS, QTDE_GAS, ESTACOES, BETA, FI, PI)
+                if Ver[-1] == V or GAS == 0 :
+                    return
+                FI[Ver[-1]] = 0
+                del Ver[-1]
 
-    def start_DFS_Dijkstra(self, U, V, GAS) :
-        BETA, FI, PI = self.__inicia_vertices(U)
-
+    def start_DFS_Dijkstra(self, V, U, GAS, QTDE_GAS, ESTACOES) :
+        BETA, FI, PI = self.inicia_vertices(U)
+        Vertices = []
+        self.DFS_Dijkstra(Vertices, V, U, GAS + 1, QTDE_GAS, ESTACOES, BETA, FI, PI)
+        return Vertices
 
     ####################################################################################################################
 
