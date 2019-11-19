@@ -598,7 +598,7 @@ class Grafo:
 
     def DijkstraDrone(self, U, V, GAS, QTDE_GAS, ESTACOES):
         '''
-        Implementação do algoritmo de Dijkstra
+        Implementação do algoritmo de Dijkstra para achar menor caminho para um drone percorrer
         :param U: Vértice inicial
         :param V: Vértice final
         :return: Um caminho do tipo String
@@ -606,13 +606,14 @@ class Grafo:
         self.__retira_arestas()
         BETA, FI, PI = self.inicia_vertices(U)
         W = U
-        while (W != V):
+        cond = True
+        while (W != V and cond):
             if W in ESTACOES :
                 GAS += QTDE_GAS
             Vertices, AUX = self.vertices_e_arestas_adjacentes(W, self.arestas())
             self.__retira_vertice(PI[W], Vertices)
             for i in Vertices:
-                if BETA[i] > BETA[W] + 1 and FI[i] == 0 and BETA[W] + 1 < GAS:
+                if BETA[i] > BETA[W] + 1 and FI[i] == 0 and BETA[W] < GAS:
                     BETA[i] = BETA[W] + 1
                     PI[i] = W
             AUX1 = inf
@@ -620,8 +621,13 @@ class Grafo:
             for i in self.N:
                 if FI[i] == 0 and BETA[i] < AUX1 :
                     r = i
-            FI[r] = 1
-            W = r
+            if r == 0 :
+                cond = False
+            else :
+                FI[r] = 1
+                W = r
+        if not cond :
+            return False
         AUX = PI[V]
         CAMINHO = V + ' - '
         while (AUX != 0):
@@ -630,42 +636,62 @@ class Grafo:
         CAMINHO = CAMINHO[::-1]
         return CAMINHO[3:]
 
-
-    def DFS_Dijkstra(self, Ver, V, W, GAS, QTDE_GAS, ESTACOES, BETA, FI, PI) :
-        Ver.append(W)
-        GAS -= 1
-        if W in ESTACOES :
-            GAS = QTDE_GAS
-        if Ver[-1] == V or GAS == 0 :
-            return
+    def startDijkstraDrone(self, U, V, GAS, QTDE_GAS, ESTACOES) :
+        '''
+        É chamada a função DijkstraDrone, por algum motivo, poder ser que não seja encontrado um caminho que comece de X e vai até Y,
+        no caso X é o inicial e Y p final, mas, segundo alguns testes, é possível achar um caminho começando de Y até X, nesse caso,
+        a String é invertida, caso seja um caminho
+        :param U: Vértice inicial
+        :param V: Vértice final
+        :param GAS: Gasolina
+        :param QTDE_GAS: Qtde de gasolina que o drone pode abastecer num posto
+        :param ESTACOES: posto de gasolinas
+        :return: um caminho ou uma mensagem
+        '''
+        if not self.DijkstraDrone(U, V, GAS, QTDE_GAS, ESTACOES) :
+            if not self.DijkstraDrone(V, U, GAS, QTDE_GAS, ESTACOES) :
+                return 'Caminho não encontrado!'
+            else :
+                return self.DijkstraDrone(V, U, GAS, QTDE_GAS, ESTACOES)[::-1]
         else :
-            Vertices = self.__vertices_adjacentes(W)
-            while True :
-                for i in Vertices :
-                    if BETA[i] > BETA[W] + 1 and FI[i] == 0 :
-                        BETA[i] = BETA[W] + 1
-                        PI[i] = W
-                AUX1 = inf
-                R = 0
-                for i in Vertices:
-                    if FI[i] == 0 and BETA[i] < AUX1 :
-                        R = i
-                if R == 0 :
-                    return
-                FI[R] = 1
-                W = R
-                Vertices.remove(R)
-                self.DFS_Dijkstra(Ver, V, W, GAS, QTDE_GAS, ESTACOES, BETA, FI, PI)
-                if Ver[-1] == V or GAS == 0 :
-                    return
-                FI[Ver[-1]] = 0
-                del Ver[-1]
+            return self.DijkstraDrone(U, V, GAS, QTDE_GAS, ESTACOES)
 
-    def start_DFS_Dijkstra(self, V, U, GAS, QTDE_GAS, ESTACOES) :
-        BETA, FI, PI = self.inicia_vertices(U)
-        Vertices = []
-        self.DFS_Dijkstra(Vertices, V, U, GAS + 1, QTDE_GAS, ESTACOES, BETA, FI, PI)
-        return Vertices
+    # Tentativa de Dijkstra com DFS, acha um caminho, mas as vezes não é o menor
+    # def DFS_Dijkstra(self, Ver, V, W, GAS, QTDE_GAS, ESTACOES, BETA, FI, PI) :
+    #     Ver.append(W)
+    #     GAS -= 1
+    #     if W in ESTACOES :
+    #         GAS = QTDE_GAS
+    #     if Ver[-1] == V or GAS == 0 :
+    #         return
+    #     else :
+    #         Vertices = self.__vertices_adjacentes(W)
+    #         while True :
+    #             for i in Vertices :
+    #                 if BETA[i] > BETA[W] + 1 and FI[i] == 0 :
+    #                     BETA[i] = BETA[W] + 1
+    #                     PI[i] = W
+    #             AUX1 = inf
+    #             R = 0
+    #             for i in Vertices:
+    #                 if FI[i] == 0 and BETA[i] < AUX1 :
+    #                     R = i
+    #             if R == 0 :
+    #                 return
+    #             FI[R] = 1
+    #             W = R
+    #             Vertices.remove(R)
+    #             self.DFS_Dijkstra(Ver, V, W, GAS, QTDE_GAS, ESTACOES, BETA, FI, PI)
+    #             if Ver[-1] == V or GAS == 0 :
+    #                 return
+    #             FI[Ver[-1]] = 0
+    #             del Ver[-1]
+    #
+    # def start_DFS_Dijkstra(self, V, U, GAS, QTDE_GAS, ESTACOES) :
+    #     BETA, FI, PI = self.inicia_vertices(U)
+    #     Vertices = []
+    #     self.DFS_Dijkstra(Vertices, V, U, GAS + 1, QTDE_GAS, ESTACOES, BETA, FI, PI)
+    #     return Vertices
 
     ####################################################################################################################
 
