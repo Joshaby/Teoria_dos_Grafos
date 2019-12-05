@@ -53,7 +53,7 @@ g_p1.adicionaAresta('A-C')
 # g_p2.adicionaAresta('D-F')
 # g_p2.adicionaAresta('F-F')
 
-grafo = Grafo(['A','B','C','D','E','H','F','G','I','J'])
+grafo = Grafo(['A', 'B', 'C', 'D', 'E', 'H', 'F', 'G', 'I', 'J'])
 grafo.adicionaAresta('A-H')
 grafo.adicionaAresta('I-H')
 grafo.adicionaAresta('I-G')
@@ -70,9 +70,11 @@ grafo.adicionaAresta('F-B')
 grafo.adicionaAresta('F-E')
 grafo.adicionaAresta('J-B')
 
-#print(grafo.DijkstraDrone('A', 'J', 2, 3, ['C']))
+# print(grafo.DijkstraDrone('A', 'J', 2, 3, ['C']))
 
-grafo1 = Grafo(['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','X','W','Y','Z','a','b','c','d','e','f','g'])
+grafo1 = Grafo(
+    ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'X',
+     'W', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g'])
 grafo1.adicionaAresta('A-B')
 grafo1.adicionaAresta('A-C')
 grafo1.adicionaAresta('A-D')
@@ -97,6 +99,7 @@ grafo1.adicionaAresta('L-P')
 grafo1.adicionaAresta('M-Q')
 grafo1.adicionaAresta('N-R')
 grafo1.adicionaAresta('O-R')
+grafo1.adicionaAresta('Q-R')
 grafo1.adicionaAresta('O-Q')
 grafo1.adicionaAresta('O-S')
 grafo1.adicionaAresta('P-R')
@@ -120,12 +123,11 @@ grafo1.adicionaAresta('f-e')
 grafo1.adicionaAresta('e-d')
 grafo1.adicionaAresta('e-g')
 
-print(grafo1.startDijkstraDrone('A', 'd', 3, 3, ['I', 'R', 'X', 'f']))
-#print(grafo.Dijkstra('A', 'J'))
-
+# print(grafo1.startDijkstraDrone('A', 'd', 3, 4, ['I', 'R', 'X', 'f']))
+print(grafo1.KruskallModificado({}))
+#
 # print(grafo.DFS_Dijkstra(Ver, 'J', 'A', 3, 3, ['C'], BETA, FI, PI))
 #
-# a = str.ascii_uppercase
 #
 # grafo1 = Grafo(a)
 # cont = 0

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from math import inf
-
+from random import choice, randint
 
 class VerticeInvalidoException(Exception):
     pass
@@ -586,6 +586,7 @@ class Grafo:
             for i in self.N:
                 if FI[i] == 0 and BETA[i] < AUX1:
                     r = i
+                    AUX1 = BETA[i]
             FI[r] = 1
             W = r
         AUX = PI[V]
@@ -621,6 +622,7 @@ class Grafo:
             for i in self.N:
                 if FI[i] == 0 and BETA[i] < AUX1 :
                     r = i
+                    AUX1 = BETA[i]
             if r == 0 :
                 cond = False
             else :
@@ -648,13 +650,7 @@ class Grafo:
         :param ESTACOES: posto de gasolinas
         :return: um caminho ou uma mensagem
         '''
-        if not self.DijkstraDrone(U, V, GAS, QTDE_GAS, ESTACOES) :
-            if not self.DijkstraDrone(V, U, GAS, QTDE_GAS, ESTACOES) :
-                return 'Caminho não encontrado!'
-            else :
-                return self.DijkstraDrone(V, U, GAS, QTDE_GAS, ESTACOES)[::-1]
-        else :
-            return self.DijkstraDrone(U, V, GAS, QTDE_GAS, ESTACOES)
+        return self.DijkstraDrone(U, V, GAS, QTDE_GAS, ESTACOES)
 
     # Tentativa de Dijkstra com DFS, acha um caminho, mas as vezes não é o menor
     # def DFS_Dijkstra(self, Ver, V, W, GAS, QTDE_GAS, ESTACOES, BETA, FI, PI) :
@@ -692,6 +688,247 @@ class Grafo:
     #     Vertices = []
     #     self.DFS_Dijkstra(Vertices, V, U, GAS + 1, QTDE_GAS, ESTACOES, BETA, FI, PI)
     #     return Vertices
+
+    #### ROTEIRO 8 #####################################################################################################
+
+    def __EscolheVerticeSemPeso(self, V, G):
+        Vertices = self.__vertices_adjacentes(V)
+        for i in Vertices :
+            if i not in G.N :
+                return i
+        return 0
+
+    def PrimSemPeso(self) :
+        VerticeIni = choice(self.N)
+        G = Grafo(VerticeIni)
+        while(len(self.N) != len(G.N)) :
+            i = choice(G.N)
+            VerticeEscolhido = self.__EscolheVerticeSemPeso(i, G)
+            if VerticeEscolhido != 0 :
+                G.adicionaVertice(VerticeEscolhido)
+                G.adicionaAresta(i + self.SEPARADOR_ARESTA + VerticeEscolhido)
+        return G.N
+
+    def __EscolheVertice(self, V, G, DicionarioArestas) :
+        Vertices = self.__vertices_adjacentes(V)
+        AUX = inf
+        AUX1 = '0'
+        for i in Vertices :
+            if (V + self.SEPARADOR_ARESTA + i) in DicionarioArestas and (DicionarioArestas[V + self.SEPARADOR_ARESTA + i] < AUX) and i not in G.N :
+                AUX = DicionarioArestas[V + self.SEPARADOR_ARESTA + i]
+                AUX1 = i
+            if (i + self.SEPARADOR_ARESTA + V) in DicionarioArestas and (DicionarioArestas[i + self.SEPARADOR_ARESTA + V] < AUX) and i not in G.N :
+                AUX = DicionarioArestas[i + self.SEPARADOR_ARESTA + V]
+                AUX1 = i
+        if AUX1 != '0' :
+            return AUX1, AUX
+        else :
+            return 0, 0
+
+    def Prim(self, DicionarioArestas) :
+        VerticeIni = choice(self.N)
+        G = Grafo(VerticeIni)
+        self.__setPesos(DicionarioArestas)
+        while(len(self.N) != len(G.N)) :
+            AUX = inf
+            AUX1 = '0'
+            VerticeEscolhido1 = '0'
+            for i in G.N :
+                VerticeEscolhido, Peso = self.__EscolheVertice(i, G, DicionarioArestas)
+                if VerticeEscolhido != 0 and Peso != 0 :
+                    if Peso < AUX :
+                        AUX = Peso
+                        AUX1 = i
+                        VerticeEscolhido1 = VerticeEscolhido
+            G.adicionaVertice(VerticeEscolhido1)
+            G.adicionaAresta(AUX1 + self.SEPARADOR_ARESTA + VerticeEscolhido1)
+        return G
+
+    def __EscolheVerticeModificado1(self, V, G, DicionarioArestas) :
+        AUX = inf
+        AUX1 = '0'
+        for i in self.__vertices_adjacentes(V) :
+            if ((V + self.SEPARADOR_ARESTA + i) in DicionarioArestas or (i + self.SEPARADOR_ARESTA + V) in DicionarioArestas) and i not in G.N :
+                PesosSobreVertice = 0
+                for j in DicionarioArestas :
+                    if i in j:
+                        PesosSobreVertice += DicionarioArestas[j]
+                if PesosSobreVertice < AUX :
+                    AUX = PesosSobreVertice
+                    AUX1 = i
+        if AUX1 != '0':
+            return AUX1, AUX
+        else:
+            return 0, 0
+
+    def __EscolheVerticeModificado2(self, DicionarioArestas, Vertices) :
+        AUX = inf
+        AUX1 = '0'
+        AUX3 = 0
+        if Vertices == [] :
+            AUX3 = self.N
+        else :
+            AUX3 = Vertices
+        for i in AUX3 :
+            PesosSobreVertice = 0
+            for j in DicionarioArestas:
+                if i in j:
+                    PesosSobreVertice += DicionarioArestas[j]
+            if PesosSobreVertice < AUX:
+                AUX = PesosSobreVertice
+                AUX1 = i
+        if AUX1 != '0':
+            return AUX1
+        else:
+            return 0
+
+    def PrimModificado(self, DicionarioArestas) :
+        self.__setPesos(DicionarioArestas)
+        VerticeIni = self.__EscolheVerticeModificado2(DicionarioArestas, [])
+        G = Grafo(VerticeIni)
+        while(len(self.N) != len(G.N)) :
+            AUX = inf
+            AUX1 = '0'
+            VerticeEscolhido1 = '0'
+            for j in G.N :
+                VerticeEscolhido, Peso = self.__EscolheVerticeModificado1(j, G, DicionarioArestas)
+                if VerticeEscolhido != 0 and Peso != 0 :
+                    if Peso < AUX :
+                        AUX = Peso
+                        AUX1 = j
+                        VerticeEscolhido1 = VerticeEscolhido
+            G.adicionaVertice(VerticeEscolhido1)
+            G.adicionaAresta(AUX1 + self.SEPARADOR_ARESTA + VerticeEscolhido1)
+        return G
+
+    def __setPesos(self, DicionarioArestas) :
+        if DicionarioArestas == {} :
+            for i in self.arestas() :
+                DicionarioArestas[i] = randint(1, len(self.N))
+        else :
+            return DicionarioArestas
+
+    def __MenorAresta(self, DicionarioArestas) :
+        AUX = inf
+        AUX1 = '0'
+        for i in DicionarioArestas :
+            if DicionarioArestas[i] < AUX:
+                AUX = DicionarioArestas[i]
+                AUX1 = i
+        if AUX1 != '0' :
+            return AUX1
+        else :
+            return 0
+
+    def __AdicionaAresta(self, Aresta, ArvoresArestas) :
+        for i in ArvoresArestas :
+            if Aresta[0] in ArvoresArestas[i].N :
+                if Aresta[2] not in ArvoresArestas[i].N :
+                    for j in ArvoresArestas :
+                        if Aresta[2] in ArvoresArestas[j].N :
+                            if Aresta[0] not in ArvoresArestas[j].N :
+                                if len(ArvoresArestas[i].N) > len(ArvoresArestas[j].N) :
+                                    for k in ArvoresArestas[j].N :
+                                        ArvoresArestas[i].adicionaVertice(k)
+                                    for k in ArvoresArestas[j].arestas() :
+                                        ArvoresArestas[i].adicionaAresta(k)
+                                    ArvoresArestas[i].adicionaAresta(Aresta)
+                                    del ArvoresArestas[j]
+                                    break
+                                else :
+                                    for k in ArvoresArestas[i].N :
+                                        ArvoresArestas[j].adicionaVertice(k)
+                                    for k in ArvoresArestas[i].arestas() :
+                                        ArvoresArestas[j].adicionaAresta(k)
+                                    ArvoresArestas[j].adicionaAresta(Aresta)
+                                    del ArvoresArestas[i]
+                                    break
+                            else :
+                                break
+                else :
+                    break
+                break
+
+    def Kruskall(self, DicionarioArestas) :
+        ArvoresArestas = {}
+        for i in self.N :
+            ArvoresArestas[i] = Grafo(i)
+        self.__setPesos(DicionarioArestas)
+        while(len(ArvoresArestas) != 1) :
+            MenorAresta = self.__MenorAresta(DicionarioArestas)
+            self.__AdicionaAresta(MenorAresta, ArvoresArestas)
+            del DicionarioArestas[MenorAresta]
+        AUX = list(ArvoresArestas.keys())
+        return ArvoresArestas[AUX[0]]
+
+    def __min(self, DicionarioArestas) :
+        AUX = list(DicionarioArestas.values())
+        Menor = AUX[0]
+        for i in range(1, len(AUX) - 1) :
+            if AUX[i] < Menor :
+                Menor = AUX[i]
+        return Menor
+
+    def __max(self, DicionarioArestas) :
+        AUX = list(DicionarioArestas.values())
+        Maior = AUX[0]
+        for i in range(len(AUX)) :
+            if AUX[i] > Maior :
+                Maior = AUX[i]
+        return Maior
+
+    def __BucketSort(self, DicionarioArestas) :
+        BucketsPesos = []
+        BucketsArestas = []
+        QtdeBuckets = 5
+        for i in range(QtdeBuckets) :
+            BucketsPesos.append([])
+        for i in range(QtdeBuckets) :
+            BucketsArestas.append([])
+        MAX = self.__max(DicionarioArestas)
+        MIN = self.__min(DicionarioArestas)
+        for i in DicionarioArestas :
+            AUX = (((DicionarioArestas[i] - MIN) / (MAX - MIN)) * (QtdeBuckets - 1)) + 1
+            if AUX >= QtdeBuckets :
+                AUX -= 1
+            BucketsArestas[int(AUX)].append(i)
+            BucketsPesos[int(AUX)].append(DicionarioArestas[i])
+        for i in range(len(BucketsPesos)) :
+            cond = True
+            while cond :
+                cond = False
+                for k in range(len(BucketsPesos[i]) - 1) :
+                    if BucketsPesos[i][k] > BucketsPesos[i][k + 1] :
+                        AUX = BucketsPesos[i][k]
+                        AUX1 = BucketsArestas[i][k]
+                        BucketsPesos[i][k] = BucketsPesos[i][k + 1]
+                        BucketsArestas[i][k] = BucketsArestas[i][k + 1]
+                        BucketsPesos[i][k + 1] = AUX
+                        BucketsArestas[i][k + 1] = AUX1
+                        cond = True
+        PesosOrdenados = []
+        ArestasOrdenadas = []
+        for i in BucketsPesos :
+            for k in i :
+                PesosOrdenados.append(k)
+        for i in BucketsArestas :
+            for k in i :
+                ArestasOrdenadas.append(k)
+        return PesosOrdenados, ArestasOrdenadas
+
+    def KruskallModificado(self, DicionarioArestas) :
+        self.__setPesos(DicionarioArestas)
+        PesosOrdenados, ArestasOrdenadas = self.__BucketSort(DicionarioArestas)
+        ArvoresArestas = {}
+        for i in self.N :
+            ArvoresArestas[i] = Grafo(i)
+        while (len(ArestasOrdenadas) != 0) :
+            MenorAresta = ArestasOrdenadas[0]
+            self.__AdicionaAresta(MenorAresta, ArvoresArestas)
+            del ArestasOrdenadas[0]
+        AUX = list(ArvoresArestas.keys())
+        return ArvoresArestas[AUX[0]]
+
 
     ####################################################################################################################
 

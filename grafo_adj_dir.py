@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from copy import deepcopy
+from math import inf
 
 class VerticeInvalidoException(Exception):
     pass
@@ -238,6 +239,169 @@ class Grafo:
         grafo.M = List
         return grafo
 
+    def arestas_sobre_vertice(self, v):
+        '''
+        Adiciona a arestas que incidem em um dado vértice
+        :return: lista de arestas
+        '''
+        for i in range(len(self.N)):
+            List = list()
+            if self.N[i] == v:
+                for k in range(len(self.N)):
+                    for j in range(k, len(self.N)):
+                        if self.M[k][j] != 0:
+                            for m in range(self.M[k][j]):
+                                if j == i or k == i:
+                                    List.append(self.N[k] + self.SEPARADOR_ARESTA + self.N[j])
+                return List
+
+    def arestas(self):
+        '''
+        Função para percorrer um Grafo e saber quais as arestas existentes nele
+        :return: Retorna as arestas existentes de um grafo
+        '''
+        List = list()
+        for i in range(len(self.N)):
+            for j in range(i, len(self.N)):
+                for k in range(self.M[i][j]):
+                    List.append(self.N[i] + self.SEPARADOR_ARESTA + self.N[j])
+        return List
+
+    def __vertices_adjacentes(self, VerticeEntrada):
+        '''
+        Descobre quais são os vertices adjacentes de VerticeEntrada
+        :param VerticeEntrada: Um vertice qualquer
+        :return: Lista com os vertices adjacentes de VerticeEntrada
+        '''
+        List = self.arestas_sobre_vertice(VerticeEntrada)
+        for i in range(len(List)):
+            if List[i][-1] == VerticeEntrada:
+                List[i] = List[i][::-1]
+            List[i] = List[i][-1]
+        return List
+
+    def vertices_e_arestas_adjacentes(self, Vertice, Arestas):
+        '''
+        Nessa função, tem função como saber quais vertices e arestas são adjacentes a Vertice. É dado nomes a arestas
+        para ajudar a percorrer o Grafo e achar um caminho euleriano
+        :param Vertice: Vertice para saber quais vertices esta ligados com ele
+        :param Arestas: Arestas ligadas ao Vertice
+        :return: Lista de vertices e arestas a adjacentes a Vertice
+        '''
+        NewArestas = Arestas[:]
+        VerticesAdjacentes = self.__vertices_adjacentes(Vertice)
+        ArestasAdjacentes = list()
+        NomesVertices = [str('a' + str(i)) for i in range(1, len(Arestas) + 1)]
+        for i in VerticesAdjacentes:
+            Aresta = Vertice + self.SEPARADOR_ARESTA + i
+            for j in range(len(NewArestas)):
+                if Aresta == NewArestas[j] or Aresta[::-1] == NewArestas[j]:
+                    ArestasAdjacentes.append(NomesVertices[j])
+                    del NewArestas[j]
+                    del NomesVertices[j]
+                    break
+        return VerticesAdjacentes, ArestasAdjacentes
+
+    def __retira_vertice(self, Vertice, Vertices):
+        '''
+
+        :param Vertice: Vértice a ser tirado
+        :param Vertices: Lista de vértices
+        :return: nda
+        '''
+        if Vertice in Vertices:
+            Vertices.remove(Vertice)
+
+    def __retira_arestas(self):
+        '''
+        retira arestas paralelas e laços
+        :return:
+        '''
+        for i in range(len(self.N)):
+            for j in range(i, len(self.N)):
+                if self.M[i][j] > 1:
+                    self.M[i][j] = 1
+
+    def inicia_vertices(self, U):
+        '''
+        Calcula o BETA, FI e Pi dos vértices
+        :param U: Vértice de início
+        :return: BETA, FI, PI
+        '''
+        BETA = dict()
+        FI = dict()
+        PI = dict()
+        for i in self.N:
+            PI[i] = 0
+            if i == U:
+                BETA[i] = 0
+                FI[i] = 1
+            else:
+                BETA[i] = inf
+                FI[i] = 0
+        return BETA, FI, PI
+
+    def DijkstraDrone(self, U, V, GAS, QTDE_GAS, ESTACOES):
+        '''
+        Implementação do algoritmo de Dijkstra para achar menor caminho para um drone percorrer
+        :param U: Vértice inicial
+        :param V: Vértice final
+        :return: Um caminho do tipo String
+        '''
+        self.__retira_arestas()
+        BETA, FI, PI = self.inicia_vertices(U)
+        W = U
+        cond = True
+        while (PI[V] != inf and cond):
+            print(BETA)
+            print(FI)
+            print(PI)
+            print()
+            if W in ESTACOES :
+                GAS += QTDE_GAS
+            Vertices, AUX = self.vertices_e_arestas_adjacentes(W, self.arestas())
+            self.__retira_vertice(PI[W], Vertices)
+            for i in Vertices:
+                if BETA[i] > BETA[W] + 1 and FI[i] == 0 and BETA[W] < GAS:
+                    BETA[i] = BETA[W] + 1
+                    PI[i] = W
+            AUX1 = inf
+            r = 0
+            for i in self.N:
+                if FI[i] == 0 and BETA[i] < AUX1 :
+                    r = i
+            if r == 0 :
+                cond = False
+            else :
+                FI[r] = 1
+                W = r
+        AUX = PI[V]
+        CAMINHO = V + ' - '
+        while (AUX != 0):
+            CAMINHO += (AUX + ' - ')
+            AUX = PI[AUX]
+        CAMINHO = CAMINHO[::-1]
+        return CAMINHO[3:]
+
+    def startDijkstraDrone(self, U, V, GAS, QTDE_GAS, ESTACOES) :
+        '''
+        É chamada a função DijkstraDrone, por algum motivo, poder ser que não seja encontrado um caminho que comece de X e vai até Y,
+        no caso X é o inicial e Y p final, mas, segundo alguns testes, é possível achar um caminho começando de Y até X, nesse caso,
+        a String é invertida, caso seja um caminho
+        :param U: Vértice inicial
+        :param V: Vértice final
+        :param GAS: Gasolina
+        :param QTDE_GAS: Qtde de gasolina que o drone pode abastecer num posto
+        :param ESTACOES: posto de gasolinas
+        :return: um caminho ou uma mensagem
+        '''
+        # if not self.DijkstraDrone(U, V, GAS, QTDE_GAS, ESTACOES) :
+        #     if not self.DijkstraDrone(V, U, GAS, QTDE_GAS, ESTACOES) :
+        #         return 'Caminho não encontrado!'
+        #     else :
+        #         return self.DijkstraDrone(V, U, GAS, QTDE_GAS, ESTACOES)[::-1]
+        # else :
+        return self.DijkstraDrone(U, V, GAS, QTDE_GAS, ESTACOES)
 
     ####################################################################################################################
 
