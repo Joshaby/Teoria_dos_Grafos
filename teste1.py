@@ -124,7 +124,7 @@ grafo1.adicionaAresta('e-d')
 grafo1.adicionaAresta('e-g')
 
 # print(grafo1.startDijkstraDrone('A', 'd', 3, 4, ['I', 'R', 'X', 'f']))
-print(grafo1.KruskallModificado({}))
+print(grafo1.Kruskall({}))
 #
 # print(grafo.DFS_Dijkstra(Ver, 'J', 'A', 3, 3, ['C'], BETA, FI, PI))
 #

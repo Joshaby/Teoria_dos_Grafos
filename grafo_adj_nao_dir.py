@@ -692,6 +692,12 @@ class Grafo:
     #### ROTEIRO 8 #####################################################################################################
 
     def __EscolheVerticeSemPeso(self, V, G):
+        '''
+        Essa função retorna um vértice ligado a V que não esteja em G
+        :param V: Vertice qualquer
+        :param G: Grafo
+        :return: Vertice ligado a V, 0 se não tiver vértice a ser escolhido
+        '''
         Vertices = self.__vertices_adjacentes(V)
         for i in Vertices :
             if i not in G.N :
@@ -699,6 +705,10 @@ class Grafo:
         return 0
 
     def PrimSemPeso(self) :
+        '''
+        Algoritmo de Prim para grafos sem peso
+        :return: Uma MST em forma de Grafo
+        '''
         VerticeIni = choice(self.N)
         G = Grafo(VerticeIni)
         while(len(self.N) != len(G.N)) :
@@ -707,9 +717,17 @@ class Grafo:
             if VerticeEscolhido != 0 :
                 G.adicionaVertice(VerticeEscolhido)
                 G.adicionaAresta(i + self.SEPARADOR_ARESTA + VerticeEscolhido)
-        return G.N
+        return G
 
     def __EscolheVertice(self, V, G, DicionarioArestas) :
+        '''
+        Escolhe um vértice ligado a V de acordo com o peso da arestas de V e em vértice ligado a ele
+        :param V: Vértice qualquer
+        :param G: Grafo
+        :param DicionarioArestas: Dicionário com as arestas de um Grafo normal com seus respectivos pesos
+        :return: Vértice ligado a V, Peso da arestas de V com um vértice
+                0 se não tiver vértice a ser escolhido, com isso, peso retornado é zero
+        '''
         Vertices = self.__vertices_adjacentes(V)
         AUX = inf
         AUX1 = '0'
@@ -726,6 +744,11 @@ class Grafo:
             return 0, 0
 
     def Prim(self, DicionarioArestas) :
+        '''
+        Algoritmo de Prim
+        :param DicionarioArestas: Dicionário com as arestas de um Grafo normal com seus respectivos pesos
+        :return: Uma MST em forma de Grafo
+        '''
         VerticeIni = choice(self.N)
         G = Grafo(VerticeIni)
         self.__setPesos(DicionarioArestas)
@@ -745,6 +768,14 @@ class Grafo:
         return G
 
     def __EscolheVerticeModificado1(self, V, G, DicionarioArestas) :
+        '''
+        Escolhe um vértice de acordo com a soma dos pesos das arestas que incidem nesse vértice
+        :param V: Vértice qualquer
+        :param G: Grafo
+        :param DicionarioArestas: Dicionário com as arestas de um Grafo normal com seus respectivos pesos
+        :return: Vértice ligado a V, Peso de todas as arestas que incidem no vértice escolhido
+                0 se não tiver vértice a ser escolhido, com isso, peso retornado é zero
+        '''
         AUX = inf
         AUX1 = '0'
         for i in self.__vertices_adjacentes(V) :
@@ -762,14 +793,15 @@ class Grafo:
             return 0, 0
 
     def __EscolheVerticeModificado2(self, DicionarioArestas, Vertices) :
+        '''
+        Escolhe um vértice para começar o algoritmo de Prim Modificado
+        :param DicionarioArestas:
+        :param Vertices: Lista de vértice do Grafo normal
+        :return: Vértice a ser iniciado
+        '''
         AUX = inf
         AUX1 = '0'
-        AUX3 = 0
-        if Vertices == [] :
-            AUX3 = self.N
-        else :
-            AUX3 = Vertices
-        for i in AUX3 :
+        for i in Vertices :
             PesosSobreVertice = 0
             for j in DicionarioArestas:
                 if i in j:
@@ -777,14 +809,16 @@ class Grafo:
             if PesosSobreVertice < AUX:
                 AUX = PesosSobreVertice
                 AUX1 = i
-        if AUX1 != '0':
-            return AUX1
-        else:
-            return 0
+        return AUX1
 
     def PrimModificado(self, DicionarioArestas) :
+        '''
+        Algoritmo de Prim Modificado, usando somas de pesos de arestas que incindem em um vértice qualquer
+        :param DicionarioArestas: Dicionário com as arestas de um Grafo normal com seus respectivos pesos
+        :return: Uma MST em forma de Grafo
+        '''
         self.__setPesos(DicionarioArestas)
-        VerticeIni = self.__EscolheVerticeModificado2(DicionarioArestas, [])
+        VerticeIni = self.__EscolheVerticeModificado2(DicionarioArestas, self.N)
         G = Grafo(VerticeIni)
         while(len(self.N) != len(G.N)) :
             AUX = inf
@@ -802,6 +836,11 @@ class Grafo:
         return G
 
     def __setPesos(self, DicionarioArestas) :
+        '''
+        Coloca pesos nas arestas, se DicionarioArestas for vazio, são colocados pesos aleatórios
+        :param DicionarioArestas: Dicionário com as arestas de um Grafo normal com seus respectivos pesos
+        :return: DicionarioArestas
+        '''
         if DicionarioArestas == {} :
             for i in self.arestas() :
                 DicionarioArestas[i] = randint(1, len(self.N))
@@ -809,6 +848,11 @@ class Grafo:
             return DicionarioArestas
 
     def __MenorAresta(self, DicionarioArestas) :
+        '''
+        Busca menor aresta em DicionarioArestas
+        :param DicionarioArestas: Dicionário com as arestas de um Grafo normal com seus respectivos pesos
+        :return: menor aresta encontrada
+        '''
         AUX = inf
         AUX1 = '0'
         for i in DicionarioArestas :
@@ -820,28 +864,38 @@ class Grafo:
         else :
             return 0
 
-    def __AdicionaAresta(self, Aresta, ArvoresArestas) :
-        for i in ArvoresArestas :
-            if Aresta[0] in ArvoresArestas[i].N :
-                if Aresta[2] not in ArvoresArestas[i].N :
-                    for j in ArvoresArestas :
-                        if Aresta[2] in ArvoresArestas[j].N :
-                            if Aresta[0] not in ArvoresArestas[j].N :
-                                if len(ArvoresArestas[i].N) > len(ArvoresArestas[j].N) :
-                                    for k in ArvoresArestas[j].N :
-                                        ArvoresArestas[i].adicionaVertice(k)
-                                    for k in ArvoresArestas[j].arestas() :
-                                        ArvoresArestas[i].adicionaAresta(k)
-                                    ArvoresArestas[i].adicionaAresta(Aresta)
-                                    del ArvoresArestas[j]
+    def __AdicionaAresta(self, Aresta, ArvoresVertices) :
+        '''
+        Buscar grafos que contenham os vértices em Aresta
+            Por exemplo:
+                Aresta = 'A-B'
+                Será procurado o grafo que contenha A, e um que contenha B
+                Será jogada as arestas e vértice do grafo de A para o grafo de B, ou vice-versa
+        :param Aresta: Aresta qualquer
+        :param ArvoresVertices: Lista com grafos criados para cada vértice de um grafo normal
+        :return: nda
+        '''
+        for i in ArvoresVertices :
+            if Aresta[0] in ArvoresVertices[i].N :
+                if Aresta[2] not in ArvoresVertices[i].N :
+                    for j in ArvoresVertices :
+                        if Aresta[2] in ArvoresVertices[j].N :
+                            if Aresta[0] not in ArvoresVertices[j].N :
+                                if len(ArvoresVertices[i].arestas()) > len(ArvoresVertices[j].arestas()) :
+                                    for k in ArvoresVertices[j].N :
+                                        ArvoresVertices[i].adicionaVertice(k)
+                                    for k in ArvoresVertices[j].arestas() :
+                                        ArvoresVertices[i].adicionaAresta(k)
+                                    ArvoresVertices[i].adicionaAresta(Aresta)
+                                    del ArvoresVertices[j]
                                     break
                                 else :
-                                    for k in ArvoresArestas[i].N :
-                                        ArvoresArestas[j].adicionaVertice(k)
-                                    for k in ArvoresArestas[i].arestas() :
-                                        ArvoresArestas[j].adicionaAresta(k)
-                                    ArvoresArestas[j].adicionaAresta(Aresta)
-                                    del ArvoresArestas[i]
+                                    for k in ArvoresVertices[i].N :
+                                        ArvoresVertices[j].adicionaVertice(k)
+                                    for k in ArvoresVertices[i].arestas() :
+                                        ArvoresVertices[j].adicionaAresta(k)
+                                    ArvoresVertices[j].adicionaAresta(Aresta)
+                                    del ArvoresVertices[i]
                                     break
                             else :
                                 break
@@ -850,18 +904,28 @@ class Grafo:
                 break
 
     def Kruskall(self, DicionarioArestas) :
-        ArvoresArestas = {}
+        '''
+        Algoritmo de Kruskall
+        :param DicionarioArestas: Dicionário com as arestas de um Grafo normal com seus respectivos pesos
+        :return: Uma MST em forma de Grafo
+        '''
+        ArvoresVertices = {}
         for i in self.N :
-            ArvoresArestas[i] = Grafo(i)
+            ArvoresVertices[i] = Grafo(i)
         self.__setPesos(DicionarioArestas)
-        while(len(ArvoresArestas) != 1) :
+        while(len(ArvoresVertices) != 1) :
             MenorAresta = self.__MenorAresta(DicionarioArestas)
-            self.__AdicionaAresta(MenorAresta, ArvoresArestas)
+            self.__AdicionaAresta(MenorAresta, ArvoresVertices)
             del DicionarioArestas[MenorAresta]
-        AUX = list(ArvoresArestas.keys())
-        return ArvoresArestas[AUX[0]]
+        AUX = list(ArvoresVertices.keys())
+        return ArvoresVertices[AUX[0]]
 
     def __min(self, DicionarioArestas) :
+        '''
+        Escolhe o menor peso em DicionarioArestas
+        :param DicionarioArestas: Dicionário com as arestas de um Grafo normal com seus respectivos pesos
+        :return: menor peso em DicionarioArestas
+        '''
         AUX = list(DicionarioArestas.values())
         Menor = AUX[0]
         for i in range(1, len(AUX) - 1) :
@@ -870,6 +934,11 @@ class Grafo:
         return Menor
 
     def __max(self, DicionarioArestas) :
+        '''
+        Escolhe o maior peso em DicionarioArestas
+        :param DicionarioArestas: Dicionário com as arestas de um Grafo normal com seus respectivos pesos
+        :return: maior peso em DicionarioArestas
+        '''
         AUX = list(DicionarioArestas.values())
         Maior = AUX[0]
         for i in range(len(AUX)) :
@@ -878,6 +947,22 @@ class Grafo:
         return Maior
 
     def __BucketSort(self, DicionarioArestas) :
+        '''
+        Faz um bucket sort, escolha dos baldes é feita usando um fórmula :
+                BaldePosi = (((PesoAresta - MIN) / (MAX - MIN)) * (QtdeBuckets - 1)) + 1
+
+                BaldePosi: número do balde
+                PesoAresta: peso de um arestas
+                MIN: menor peso de uma aresta em DicionarioArestas
+                MAX: maior peso de uma aresta em DicionarioArestas
+                QtdeBuckets: quantidade de baldes
+
+                Com essa fórmula é calculado a posição do balde, onde a aresta será adicionada
+        São criados baldes de arestas e pesos, a ordem do balde de arestas é de acordo com o balde de pesos
+        Depois é usado bubble sort nos baldes
+        :param DicionarioArestas: Dicionário com as arestas de um Grafo normal com seus respectivos pesos
+        :return: PesosOrdenados, ArestasOrdenadas
+        '''
         BucketsPesos = []
         BucketsArestas = []
         QtdeBuckets = 5
@@ -917,6 +1002,11 @@ class Grafo:
         return PesosOrdenados, ArestasOrdenadas
 
     def KruskallModificado(self, DicionarioArestas) :
+        '''
+        Algoritmo de Kruskall modificado, usando bucket sort nas arestas para buscar ser O(1)
+        :param DicionarioArestas: Dicionário com as arestas de um Grafo normal com seus respectivos pesos
+        :return: Uma MST em forma de Grafo
+        '''
         self.__setPesos(DicionarioArestas)
         PesosOrdenados, ArestasOrdenadas = self.__BucketSort(DicionarioArestas)
         ArvoresArestas = {}
@@ -928,7 +1018,6 @@ class Grafo:
             del ArestasOrdenadas[0]
         AUX = list(ArvoresArestas.keys())
         return ArvoresArestas[AUX[0]]
-
 
     ####################################################################################################################
 
