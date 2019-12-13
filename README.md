@@ -1,2 +1,2 @@
-# grafos_em_python
+# Grafos
 Códigos em python da discipina Teoria dos Grafos
